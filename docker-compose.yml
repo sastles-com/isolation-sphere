@@ -1,0 +1,26 @@
+# Docker Compose file for ESP-IDF build environment
+
+services:
+  esp-idf-build:
+    image: espressif/idf:release-v5.0
+    container_name: m5atoms3r-builder
+    volumes:
+      # Mount current project directory
+      - .:/workspace
+      # Mount build logs directory
+      - ./build-logs:/build-logs
+      # Mount ESP-IDF tools cache to persist between builds
+      - espidf-cache:/home/esp/.espressif
+    working_dir: /workspace
+    environment:
+      - IDF_PATH=/opt/esp/idf
+      - BUILD_LOG_DIR=/build-logs
+      - IDF_TARGET=esp32s3
+      - CCACHE_DISABLE=1
+    # Keep container running for interactive development
+    tty: true
+    stdin_open: true
+
+volumes:
+  espidf-cache:
+    driver: local

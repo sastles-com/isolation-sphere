@@ -1,0 +1,48 @@
+# ESP-IDF Build Files
+build/
+sdkconfig
+sdkconfig.old
+.vscode/
+.idea/
+
+# Build Logs
+build-logs/
+*.log
+
+# Docker
+.docker/
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup files
+*.bak
+*.tmp
+*~
+
+# IDE
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ESP-IDF specific
+dependencies.lock
+managed_components/
