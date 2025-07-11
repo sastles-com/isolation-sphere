@@ -1,0 +1,11 @@
+idf_component_register(
+    SRCS 
+        "src/ros2_manager.c"
+    INCLUDE_DIRS 
+        "include"
+    REQUIRES 
+        esp_common
+        esp_system
+        freertos
+        esp_timer
+)

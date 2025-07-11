@@ -1,0 +1,25 @@
+idf_component_register(
+    SRCS 
+        "src/base_test.cpp"
+        "src/psram_test.cpp"
+        "src/bno055_test.cpp"
+        "src/wifi_test.cpp"
+        "src/ros2_test.cpp"
+        "src/test_manager.cpp"
+    INCLUDE_DIRS 
+        "include"
+    REQUIRES 
+        esp_common
+        esp_hw_support
+        esp_system
+        esp_wifi
+        esp_netif
+        esp_event
+        freertos
+        nvs_flash
+        driver
+        bno055
+        wifi_manager
+        hardware_test
+        ros2_manager
+)

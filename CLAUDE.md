@@ -12,10 +12,10 @@ This is a hybrid development environment for M5atomS3R (ESP32-S3) that combines:
 ## Hardware Target
 
 **M5atomS3R Specifications:**
-- MCU: ESP32-S3FH4R2
-- Flash: 4MB
-- PSRAM: 2MB
-- Features: RGB LED, Button, IMU, WiFi/Bluetooth
+- MCU: ESP32-S3FH4R2 (ESP32-S3-PICO-1)
+- Flash: 8MB (4MB configured in firmware)
+- PSRAM: 8MB
+- Features: RGB LED, Button, IMU(BNO055), WiFi/Bluetooth, GROVE I2C connector
 
 ## Project Structure
 
@@ -111,7 +111,7 @@ isolation-sphere/
 Key settings in `sdkconfig.defaults`:
 - Target: ESP32-S3
 - Flash: 4MB, 80MHz, QIO mode
-- PSRAM: 2MB, enabled
+- PSRAM: 8MB, OCT mode, 40MHz, enabled with malloc support
 - WiFi/Bluetooth: enabled
 - USB Serial/JTAG: enabled for debugging
 
@@ -124,8 +124,8 @@ Key settings in `sdkconfig.defaults`:
 ```c
 #define LED_GPIO    GPIO_NUM_35      // RGB LED (WS2812)
 #define BUTTON_GPIO GPIO_NUM_41      // Button
-#define SDA_GPIO    GPIO_NUM_38      // I2C SDA
-#define SCL_GPIO    GPIO_NUM_39      // I2C SCL
+#define SDA_GPIO    GPIO_NUM_2       // I2C SDA (GROVE connector)
+#define SCL_GPIO    GPIO_NUM_1       // I2C SCL (GROVE connector)
 ```
 
 ## Troubleshooting
@@ -197,4 +197,149 @@ Key settings in `sdkconfig.defaults`:
 tail -f build-logs/build_*.log    # Watch build logs
 ```
 
-This setup provides a professional development environment with clean separation between build and deployment phases, comprehensive logging, and integrated workflow automation.
+## PSRAM Configuration and Testing
+
+### PSRAM Setup Success
+The M5atomS3R's 8MB PSRAM has been successfully configured and verified:
+
+**Verification Steps:**
+1. **Configuration Reset**: Removed old `sdkconfig` and rebuilt with fresh settings
+2. **Correct Settings Applied**: 
+   - `CONFIG_SPIRAM=y` - PSRAM enabled
+   - `CONFIG_SPIRAM_MODE_OCT=y` - OCT mode for high performance
+   - `CONFIG_SPIRAM_TYPE_ESPPSRAM64=y` - 64Mbit (8MB) type
+   - `CONFIG_SPIRAM_SPEED_40M=y` - 40MHz for stability
+   - `CONFIG_SPIRAM_USE_MALLOC=y` - Enable malloc() usage
+
+**Test Results (Successful):**
+```
+I (1008) esp_psram: SPI SRAM memory test OK
+I (1020) esp_psram: Adding pool of 8192K of PSRAM memory to heap allocator
+I (1025) M5ATOMS3R: PSRAM total: 8388608 bytes
+I (1025) M5ATOMS3R: PSRAM free: 8386308 bytes
+I (1025) M5ATOMS3R: Free Heap: 8734192 bytes (PSRAM + Internal RAM)
+```
+
+### Monitoring Tools
+For stable log monitoring during development:
+```bash
+# Continuous monitor (auto-reconnect on reset)
+./monitor-loop.sh
+
+# Screen-based monitor (reset-resistant)
+./monitor-reset.sh
+```
+
+## Test Development Policy
+
+**⚠️ IMPORTANT: All tests must be implemented as classes in the test framework.**
+
+All hardware and functionality tests should be implemented using the class-based test framework located in `components/test_framework/`. This ensures:
+- **Consistency**: Standardized test structure and reporting
+- **Maintainability**: Easy to modify and extend existing tests
+- **Reusability**: Test components can be reused across different scenarios
+- **Professional Output**: Comprehensive test results with detailed statistics
+
+### Adding New Tests
+1. Create a new test class inheriting from `BaseTest`
+2. Implement `setup()`, `execute()`, and `teardown()` methods
+3. Add test-specific configuration methods
+4. Register the test with `TestManager` in `test_main.cpp`
+
+## Test Plan
+
+### Test01: PSRAM Verification ✅ COMPLETED
+- **Implementation**: `PSRAMTest` class
+- **Status**: PASSED
+- **PSRAM Total**: 8,388,608 bytes (8MB)
+- **PSRAM Free**: 8,386,308 bytes
+- **Heap Total**: 8,734,192 bytes (PSRAM + Internal RAM)
+
+### Test02: IMU (BNO055) Operation Test ✅ COMPLETED
+- **Implementation**: `BNO055Test` class
+- **Objective**: Verify BNO055 IMU functionality
+- **Connection**: I2C via GROVE connector (SDA:2, SCL:1)
+- **Target Data**: Quaternion values with validation
+- **Status**: IMPLEMENTED
+
+### Test03: WiFi Connection Test ✅ COMPLETED
+- **Implementation**: `WiFiTest` class
+- **Objective**: Verify WiFi connectivity and stability
+- **Target Network**: `ros2_atom_ap` / `isolation-sphere`
+- **Tests**: Connection, stability, scan, reconnection, performance
+- **Status**: IMPLEMENTED
+
+### Test04: ROS2 Connection Test 🔄 PENDING
+- **Implementation**: `ROS2Test` class (to be created)
+- **Objective**: Verify ROS2 communication over WiFi
+- **Requirements**: 
+  - WiFi connection to `ros2_atom_ap`
+  - ROS2 node creation and topic communication
+  - IMU data publishing to `m5atom/imu` topic
+  - Video frame subscription from `video_frames` topic
+
+## ROS2 Communication System
+
+The project includes a Raspberry Pi-based ROS2 communication system that the ESP32 connects to:
+
+### Raspberry Pi ROS2 Components
+
+#### 1. Main Web Server (`raspi/main.py`)
+- **Purpose**: FastAPI web server handling video uploads and ROS2 bridge
+- **Functionality**:
+  - Video processing (320x160 MP4 at 10fps)
+  - Redis middleware for data exchange
+  - ROS2 publisher for video frames
+- **ROS2 Integration**:
+  - Node: `web_frame_bridge`
+  - Publisher: `video_frames` (sensor_msgs/CompressedImage)
+
+#### 2. ROS2 Bridge (`raspi/ros2_bridge.py`)
+- **Purpose**: Core bidirectional communication between Redis and ROS2
+- **Functionality**:
+  - Frame publishing at 10Hz from Redis to ROS2
+  - IMU data subscription and storage to Redis
+- **ROS2 Topics**:
+  - **Publisher**: `video_frames` (sensor_msgs/CompressedImage)
+  - **Subscriber**: `m5atom/imu` (sensor_msgs/Imu)
+
+#### 3. Frame Subscriber (`raspi/subscriber.py`)
+- **Purpose**: Test subscriber for video frame reception
+- **Functionality**:
+  - Subscribes to compressed image frames
+  - Debug output and optional frame saving
+- **ROS2 Integration**:
+  - Node: `frame_subscriber`
+  - Subscriber: `video_frames` (sensor_msgs/CompressedImage)
+
+### ESP32 ROS2 Integration Requirements
+
+For Test04 implementation, the ESP32 needs to:
+
+#### 1. IMU Data Publishing
+- **Topic**: `m5atom/imu`
+- **Message Type**: `sensor_msgs/Imu`
+- **Data**: Full IMU message with orientation quaternion
+- **Frequency**: 10Hz (to match bridge processing rate)
+
+#### 2. Video Frame Subscription
+- **Topic**: `video_frames`
+- **Message Type**: `sensor_msgs/CompressedImage`
+- **Format**: JPEG compressed images (320x160 pixels)
+- **Frame Rate**: 10fps
+
+#### 3. Data Formats
+- **IMU Quaternion**: Standard geometry_msgs/Quaternion (x, y, z, w)
+- **Images**: JPEG compressed in CompressedImage.data field
+- **Communication**: Direct ROS2 topic communication (no Redis on ESP32)
+
+#### 4. Communication Flow
+```
+ESP32 → ROS2 → Raspberry Pi
+[BNO055] → [m5atom/imu] → [ros2_bridge.py] → [Redis]
+
+Raspberry Pi → ROS2 → ESP32  
+[video processing] → [video_frames] → [ESP32 subscriber]
+```
+
+This setup provides a professional development environment with clean separation between build and deployment phases, comprehensive logging, integrated workflow automation, verified 8MB PSRAM functionality, and a complete class-based test framework for systematic hardware validation.
