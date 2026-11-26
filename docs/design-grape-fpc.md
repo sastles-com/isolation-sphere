@@ -4,6 +4,8 @@ Grape FPC is the display surface of isolation-sphere. One panel is a
 gore-shaped flexible PCB carrying 80 WS2812C-2020-V6 LEDs and 80
 capacitors. Ten identical panels form the sphere: 800 LEDs in total.
 
+![Goldberg polyhedron G(9,0), T=81: 800 hexagons (grey) carry the LEDs, 12 pentagons (orange) carry none](images/goldberg-g90.png)
+
 ## Why this shape
 
 The LED positions come from a Goldberg polyhedron, G(9,0), T=81:
@@ -38,6 +40,10 @@ the ball has 5 strips × 160 LEDs, driven in parallel.
 
 ## Cassette system
 
+![The sphere divided into 10 half-gore cassettes (5 longitudes × 2 hemispheres) plus 2 polar pentagons; boundaries follow the Goldberg edges](images/cassette-division.png)
+
+![A shell cassette lifted off the core: the panel and its shell segment come away as one replaceable unit](images/cassette-open.jpg)
+
 The panels are not glued. Each panel is a replaceable cassette,
 held mechanically by the back_gore frame and connected at the
 equator by pogo pins to the mother-ring. If one LED in a chain
@@ -61,8 +67,9 @@ across the whole sphere.
 ## Manufacturing
 
 - Designed in KiCad. The EasyEDA project published for the
-  EasyEDA Spark 2026 entry is a port of this design; it was
-  checked against the production Gerbers before publication.
+  EasyEDA Spark 2026 entry is a port of this design; verifying
+  the port against the production Gerbers is part of the
+  publication process.
 - Fabricated and assembled by JLCPCB (flexible PCB + SMT assembly).
 - Coverlay colour: black in the exhibited build. A white coverlay
   is under evaluation — the black FPC shows through the shell's

@@ -6,6 +6,8 @@ A 100 mm contact-juggling ball that is a spherical video display: 800 LEDs on fl
 
 isolation-sphere is a 100 mm ball that plays video on its own surface. 800 WS2812 LEDs are mounted on ten flexible "Goldberg" PCB panels that form a sphere. A BNO055 IMU re-maps the image every frame, so the picture stays fixed in space as the ball rolls and spins in your hand.
 
+![Demo: the image stays fixed in space while the ball is turned by hand](docs/images/demo.gif)
+
 This repository is the **public release** of the project: board designs, bills of materials, firmware releases and documentation. Development happens in a private repository; releases are published here as tagged snapshots.
 
 ## Two editions
@@ -30,13 +32,15 @@ This repository is the **public release** of the project: board designs, bills o
 - Battery: 2S 2000 mAh LiPo × 2 (14.8 Wh)
 - Charger input: 5–12 V via magnetic contacts at the south pole
 - Boards: Goldberg LED FPC ×10, core-XIAO-04, north-pole-04, mother-ring-04, power-AB (A/B), charge-connector-06
-- All boards designed in EasyEDA, fabricated and assembled by JLCPCB
+- All boards designed in KiCad, fabricated and assembled by JLCPCB (an EasyEDA port of the Goldberg panel is published for the EasyEDA Spark 2026 entry)
 
 See [hardware/](hardware/) for the board list and design links, and [firmware/](firmware/) for the two editions' firmware.
 
 ## Links
 
 - Demo video: https://www.youtube.com/watch?v=RMU48gLjnmo
+- English project page (Hackster.io): https://www.hackster.io/yakatano/isolation-sphere-a-contact-juggling-ball-with-800-pixels-825342
+- Project overview (note, English): https://note.com/taj_mahal/n/n34240e8664a7?hl=en
 - OSHWLab: *(link to be added when the projects are published)*
 - Exhibited at Maker Faire Tokyo 2026; submitted to the Inno-vation Generation Award 2026
 

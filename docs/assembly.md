@@ -6,6 +6,8 @@ OSHWLab design links are in `hardware/README.md`.
 > Status: overview only. Step-by-step photographs and the checks for
 > each step are added with the first tagged release.
 
+![A shell cassette lifted off the core — cassettes are removed and replaced as units, with no adhesive anywhere](images/cassette-open.jpg)
+
 ## Parts of one ball
 
 | Part | Qty | Notes |

@@ -5,6 +5,10 @@ on its own surface. 800 WS2812 LEDs cover the sphere, and a BNO055
 IMU re-maps the image every frame so the picture stays fixed in
 space while the ball rolls and spins in your hand.
 
+![The finished ball in hand: the black shell's hexagonal holes sit over the 800 LEDs](images/shell-exterior.jpg)
+
+![Demo: the image stays fixed in space while the ball is turned by hand](images/demo.gif)
+
 ## Modes
 
 - **Solo (current build):** the ball runs on its own. A 320×160
