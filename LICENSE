@@ -1,0 +1,17 @@
+CERN Open Hardware Licence Version 2 - Strongly Reciprocal
+(CERN-OHL-S v2, SPDX: CERN-OHL-S-2.0)
+
+Copyright 2026 Yasuo Katano (sastle)
+
+The hardware designs in this repository (schematics, PCB layouts, bills of
+materials and related design documentation) are licensed under the CERN Open
+Hardware Licence Version 2 - Strongly Reciprocal.
+
+The full, authoritative text of the licence is published by CERN at:
+https://ohwr.org/cern_ohl_s_v2.txt
+and at the CERN Open Hardware Licence home:
+https://cern-ohl.web.cern.ch/
+
+Firmware and software in this repository are NOT covered by this licence
+unless a folder states otherwise; see the license note in each firmware
+folder.
